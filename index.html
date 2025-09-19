@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AES Information Page</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body class="bg-gray-100 text-gray-900">
+
+  <!-- Header -->
+  <header class="bg-blue-600 text-white p-4 shadow-md fixed w-full z-10">
+    <div class="container mx-auto flex justify-between items-center">
+      <h1 class="text-xl font-semibold"><i class="fas fa-lock mr-2"></i>Advanced Encryption Standard (AES)</h1>
+      <nav class="text-sm space-x-4">
+        <a href="#intro" class="hover:underline">Intro</a>
+        <a href="#what" class="hover:underline">What is AES?</a>
+        <a href="#how" class="hover:underline">How it Works</a>
+        <a href="#takeaways" class="hover:underline">Key Takeaways</a>
+        <a href="aes_demo.html" class="bg-white text-blue-600 px-3 py-1 rounded shadow hover:bg-gray-200">Try Demo</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="pt-20 max-w-4xl mx-auto p-6 space-y-10">
+    
+    <!-- Intro -->
+    <section id="intro" class="bg-white p-6 rounded shadow">
+      <h2 class="text-2xl font-semibold mb-3">Introduction to Advanced Encryption Standards</h2>
+      <p>Advanced encryption is crucial for securing information in today's digital world. 
+        This tutorial explores two key symmetric encryption algorithms: AES (Advanced Encryption Standard).
+        It covers AES, its history, and a step-by-step explanation of how it works.
+      </p>
+    </section>
+
+    <!-- What is AES -->
+    <section id="what" class="bg-white p-6 rounded shadow">
+      <h2 class="text-2xl font-semibold mb-3">What is AES?</h2>
+      <p>Adopted in 2001, AES is the standard for symmetric encryption. 
+        It supports key sizes of 128, 192, or 256 bits and encrypts 128-bit blocks. 
+        AES is fast, secure, and widely used (e.g., HTTPS).
+      </p>
+    </section>
+
+    <!-- How it Works -->
+    <section id="how" class="bg-white p-6 rounded shadow">
+      <h2 class="text-2xl font-semibold mb-3">How AES Works</h2>
+      <ol class="list-decimal ml-6 space-y-2">
+        <li>Key Expansion: Generate round keys.</li>
+        <li>AddRoundKey (Initial): XOR plaintext with first key.</li>
+        <li>Rounds: SubBytes, ShiftRows, MixColumns, AddRoundKey.</li>
+        <li>Final Round: Same, but without MixColumns.</li>
+        <li>Output: Ciphertext.</li>
+      </ol>
+    </section>
+
+    <!-- Key Takeaways -->
+    <section id="takeaways" class="bg-white p-6 rounded shadow">
+      <h2 class="text-2xl font-semibold mb-3">Key Takeaways</h2>
+      <ul class="list-disc ml-6 space-y-2">
+        <li>Symmetric key algorithm (same key for encryption and decryption).</li>
+        <li>Strong security with efficiency.</li>
+        <li>128-bit block size.</li>
+        <li>Used in banking, wireless communication, file encryption, secure messaging.</li>
+      </ul>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-blue-600 text-white text-center p-4 mt-10">
+    <small>&copy; 2025 AES Project</small>
+  </footer>
+
+</body>
+</html>

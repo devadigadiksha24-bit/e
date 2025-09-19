@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AES Demo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900">
+
+  <header class="bg-green-600 text-white p-4 shadow-md">
+    <div class="container mx-auto flex justify-between items-center">
+      <h1 class="text-xl font-semibold">AES Encryption / Decryption Demo</h1>
+      <a href="index.html" class="bg-white text-green-600 px-3 py-1 rounded shadow hover:bg-gray-200">Back to Info</a>
+    </div>
+  </header>
+
+  <main class="max-w-2xl mx-auto p-6 space-y-6">
+    <textarea id="inputText" rows="4" class="w-full p-3 border rounded" placeholder="Enter text to encrypt or ciphertext to decrypt"></textarea>
+
+    <div class="flex gap-3">
+      <button onclick="encryptText()" class="bg-blue-600 text-white px-4 py-2 rounded">Encrypt</button>
+      <button onclick="decryptText()" class="bg-green-600 text-white px-4 py-2 rounded">Decrypt</button>
+      <button onclick="clearText()" class="bg-gray-400 text-black px-4 py-2 rounded">Clear</button>
+    </div>
+
+    <textarea id="resultText" rows="4" class="w-full p-3 border rounded" readonly placeholder="Result will appear here"></textarea>
+    <p id="status" class="text-sm text-gray-600"></p>
+  </main>
+
+  <script>
+    const API_BASE = "http://127.0.0.1:5000";  // Flask backend
+    const statusEl = document.getElementById("status");
+    const resultEl = document.getElementById("resultText");
+
+    function setStatus(msg, isError=false) {
+      statusEl.textContent = msg;
+      statusEl.className = isError ? "text-sm text-red-600" : "text-sm text-green-600";
+    }
+
+    async function encryptText() {
+      const text = document.getElementById("inputText").value.trim();
+      if (!text) return setStatus("Enter text to encrypt", true);
+      try {
+        const res = await fetch(API_BASE + "/encrypt", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({text})
+        });
+        const data = await res.json();
+        if (res.ok) {
+          resultEl.value = data.result;
+          setStatus("Encryption successful");
+        } else setStatus(data.error || "Encryption failed", true);
+      } catch (err) {
+        setStatus("Error: " + err, true);
+      }
+    }
+
+    async function decryptText() {
+      const text = document.getElementById("inputText").value.trim();
+      if (!text) return setStatus("Enter ciphertext to decrypt", true);
+      try {
+        const res = await fetch(API_BASE + "/decrypt", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({text})
+        });
+        const data = await res.json();
+        if (res.ok) {
+          resultEl.value = data.result;
+          setStatus("Decryption successful");
+        } else setStatus(data.error || "Decryption failed", true);
+      } catch (err) {
+        setStatus("Error: " + err, true);
+      }
+    }
+
+    function clearText() {
+      document.getElementById("inputText").value = "";
+      resultEl.value = "";
+      setStatus("");
+    }
+  </script>
+</body>
+</html>
