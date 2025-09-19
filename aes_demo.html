@@ -15,18 +15,37 @@
     </div>
   </header>
 
+
   <main class="max-w-2xl mx-auto p-6 space-y-6">
+    <input id="keyText" type="text" class="w-full p-3 border rounded" placeholder="Enter AES key (16/24/32 chars)">
     <textarea id="inputText" rows="4" class="w-full p-3 border rounded" placeholder="Enter text to encrypt or ciphertext to decrypt"></textarea>
 
+   
     <div class="flex gap-3">
+      <button onclick="generateKeyClick()" class="bg-purple-600 text-white px-4 py-2 rounded">Generate Key</button>
       <button onclick="encryptText()" class="bg-blue-600 text-white px-4 py-2 rounded">Encrypt</button>
       <button onclick="decryptText()" class="bg-green-600 text-white px-4 py-2 rounded">Decrypt</button>
       <button onclick="clearText()" class="bg-gray-400 text-black px-4 py-2 rounded">Clear</button>
     </div>
 
+
     <textarea id="resultText" rows="4" class="w-full p-3 border rounded" readonly placeholder="Result will appear here"></textarea>
     <p id="status" class="text-sm text-gray-600"></p>
   </main>
+
+   <script src="key.js"></script>
+<script>
+  // Auto-load saved key on page load
+  window.onload = () => {
+      applySavedKey();
+  };
+
+  // Optionally, you can add a "Generate Key" button
+  function generateKeyClick() {
+      generateAndApplyKey(16); // default 16 chars
+      setStatus("New key generated and applied", false);
+  }
+</script>
 
   <script>
     const API_BASE = "http://127.0.0.1:5000";  // Flask backend
@@ -40,12 +59,15 @@
 
     async function encryptText() {
       const text = document.getElementById("inputText").value.trim();
+      const key = document.getElementById("keyText").value.trim();
       if (!text) return setStatus("Enter text to encrypt", true);
+      if (!key) return setStatus("Enter an AES key", true);
+
       try {
         const res = await fetch(API_BASE + "/encrypt", {
           method: "POST",
           headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({text})
+          body: JSON.stringify({text, key})
         });
         const data = await res.json();
         if (res.ok) {
@@ -59,12 +81,15 @@
 
     async function decryptText() {
       const text = document.getElementById("inputText").value.trim();
+      const key = document.getElementById("keyText").value.trim();
       if (!text) return setStatus("Enter ciphertext to decrypt", true);
+      if (!key) return setStatus("Enter an AES key", true);
+
       try {
         const res = await fetch(API_BASE + "/decrypt", {
           method: "POST",
           headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({text})
+          body: JSON.stringify({text, key})
         });
         const data = await res.json();
         if (res.ok) {
@@ -78,9 +103,12 @@
 
     function clearText() {
       document.getElementById("inputText").value = "";
+      document.getElementById("keyText").value = "";
       resultEl.value = "";
       setStatus("");
     }
+   
+
   </script>
 </body>
 </html>
