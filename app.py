@@ -14,20 +14,32 @@ def pkcs7_unpad(b: bytes) -> bytes:
     pad_len = b[-1]
     return b[:-pad_len]
 
-KEY = b"ThisIsA16ByteKey"
+def validate_key(key_str: str) -> bytes:
+    key_bytes = key_str.encode()
+    if len(key_bytes) not in (16, 24, 32):
+        raise ValueError("Key must be 16, 24, or 32 characters long")
+    return key_bytes
 
 @app.route("/encrypt", methods=["POST"])
 def encrypt():
-    text = request.json.get("text", "")
-    cipher = AES.new(KEY, AES.MODE_ECB)
-    enc = cipher.encrypt(pkcs7_pad(text.encode()))
-    return jsonify({"result": base64.b64encode(enc).decode()})
+    try:
+        text = request.json.get("text", "")
+        key_str = request.json.get("key", "")
+        key = validate_key(key_str)
+        cipher = AES.new(key, AES.MODE_ECB)
+        enc = cipher.encrypt(pkcs7_pad(text.encode()))
+        return jsonify({"result": base64.b64encode(enc).decode()})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
 @app.route("/decrypt", methods=["POST"])
 def decrypt():
     try:
-        data = base64.b64decode(request.json.get("text", ""))
-        cipher = AES.new(KEY, AES.MODE_ECB)
+        text = request.json.get("text", "")
+        key_str = request.json.get("key", "")
+        key = validate_key(key_str)
+        data = base64.b64decode(text)
+        cipher = AES.new(key, AES.MODE_ECB)
         dec = pkcs7_unpad(cipher.decrypt(data)).decode()
         return jsonify({"result": dec})
     except Exception as e:
@@ -35,5 +47,3 @@ def decrypt():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
-
-    
